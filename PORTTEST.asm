@@ -24,13 +24,13 @@ Main_InitDisp:
  Main_ShowData:
   call ReadAPort
   push af
-  ld a,3
-  ld (curCol),a
-  call GetExpCurRow
-  ld hl,MyByte
-  bcall(_puts)
-  xor a
-  ld (curCol),a
+   ld a,3
+   ld (curCol),a
+   call GetExpCurRow
+   ld hl,MyByte
+   bcall(_puts)
+   xor a
+   ld (curCol),a
   pop af
   call DispHex
   ld hl,MyByte
@@ -55,7 +55,7 @@ Main_InitDisp:
   halt
   jr WaitForKey
 Exit:
- bcall(_ClrLCDFull)
+ bcall(_ClrScrnFull)
  ret
 
 IncBase:
@@ -101,9 +101,9 @@ PageDown_Partial:
 GetExpCurRow:
  ; Initialize (curRow) to where it should be shown on screen, using b
  push af
- ld a,b
- sub 1
- ld (curRow),a
+  ld a,b
+  sub 1
+  ld (curRow),a
  pop af
  ret
 
@@ -116,9 +116,9 @@ ReadAPort:
  add a,b
  sub 1
  push af
- ld c,a
- in a,(c)
- call DispBin
+  ld c,a
+  in a,(c)
+  call DispBin
  pop af
  ret
  
@@ -126,70 +126,70 @@ DispBin: ; Creates A's binary representation in MyByte
  ; Destroys none
  ; reset the string
  push af
- push bc
- push hl
- push af
- ld a,"0"
- ld b,8
- ld hl,MyByte
- DispBin_Res:
-  ld (hl),a
-  inc hl
-  djnz DispBin_Res
- ld (hl),0
- ; set up binary display
- ld b,8
- ld c,$80
- ld hl,MyByte
- pop af
- DispBin_Loop:
-  push af
-  and c
-  jr z,DispBin_NoIncrement
-  inc (hl)
-  DispBin_NoIncrement:
-  srl c
-  inc hl
-  pop af
-  djnz DispBin_Loop
- pop hl
- pop bc
+  push bc
+   push hl
+    push af
+     ld a,"0"
+     ld b,8
+     ld hl,MyByte
+     DispBin_Res:
+      ld (hl),a
+      inc hl
+      djnz DispBin_Res
+     ld (hl),0
+     ; set up binary display
+     ld b,8
+     ld c,$80
+     ld hl,MyByte
+    pop af
+    DispBin_Loop:
+     push af
+      and c
+      jr z,DispBin_NoIncrement
+      inc (hl)
+      DispBin_NoIncrement:
+      srl c
+      inc hl
+     pop af
+     djnz DispBin_Loop
+   pop hl
+  pop bc
  pop af
  ret
 
 DispHex: ; Creates A's hex representation in MyByte
  ; Destroys none
  push af
- push bc
- push hl
- push af
- ld a,"0"
- ld b,2
- ld hl,MyByte
- DispHex_Res:
-  ld (hl),a
-  inc hl
-  djnz DispHex_Res
- ld (hl),0
- pop af
- push af
- and %11110000
- rra
- rra
- rra
- rra
- cp 10
- call nc,OffsetToA
- add a,$30
- ld (MyByte),a
- pop af
- and %00001111
- cp 10
- call nc,OffsetToA
- add a,$30
- ld (MyByte+1),a
- pop hl
- pop bc
+  push bc
+   push hl
+    push af
+     ld a,"0"
+     ld b,2
+     ld hl,MyByte
+     DispHex_Res:
+      ld (hl),a
+      inc hl
+      djnz DispHex_Res
+     ld (hl),0
+    pop af
+    push af
+     and %11110000
+     rra
+     rra
+     rra
+     rra
+     cp 10
+     call nc,OffsetToA
+     add a,$30
+     ld (MyByte),a
+    pop af
+    and %00001111
+    cp 10
+    call nc,OffsetToA
+    add a,$30
+    ld (MyByte+1),a
+   pop hl
+  pop bc
  pop af
  ret
 
